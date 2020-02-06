@@ -5,6 +5,24 @@
     let largura = window.innerWidth
 
     this.vidas = 3
+    this.tempo = 10
+    this.nivel = window.location.search.replace('?','')
+
+    this.tempoNivel = function(){
+        if (this.nivel == "facil"){
+            this.tempo = 12
+            return 1800
+        } else if (this.nivel == "normal"){
+            this.tempo = 14
+            return 1400
+        } else if (this.nivel == "dificil"){
+            this.tempo = 16
+            return 1000
+        } else if (this.nivel == "insano"){
+            this.tempo = 18
+            return 750
+        } 
+    }
 
     this.getVidas = function(){
         return this.vidas
@@ -13,6 +31,10 @@
     this.setVidas = function( vidas){
         this.vidas = vidas
     }
+
+    this.getTempo = () => {return this.tempo}
+
+    this.setTempo = (tempo) => {this.tempo = tempo}
 
     this.perderVida = function( ){
         this.setVidas(this.getVidas() - 1)
@@ -39,14 +61,27 @@
 
 let janela = new Janela()
 
+function setCronometro(){
+    document.getElementById('cronometro').textContent= janela.getTempo()
+}
 
+var cronometro = setInterval(function(){
+    janela.setTempo(janela.getTempo()-1)
+    if(janela.getTempo() < 0){
+        clearInterval(cronometro)
+        clearInterval(criarMosquito)
+        window.location.href='vitoria.html'
+    } else{
+        setCronometro()
+    }
+},
+1000)
 
 function Mosquito (){
 
     //Remover mosquito caso exista
     if (!janela.getVidas()){
-        document.getElementById('mosquito').remove()
-            window.location.href = 'fim_de_jogo.html'
+        gameOver()
     }
     else{
         if (document.getElementById('mosquito')){
@@ -79,17 +114,26 @@ function Mosquito (){
             }
         }
         
-        this.element = document.createElement('img')
-        this.element.src = 'img/mosca.png'
-        this.element.id = 'mosquito'
-        this.element.className = this.getClassMosquito() + ' ' + this.getLado()
-        this.element.style.left = this.posicaoX + 'px'
-        this.element.style.top = this.posicaoY + 'px'
-        this.element.style.position = 'absolute'
-        this.element.onclick = function(){
-            this.remove()
+        this.createMosquito = function(){
+            this.element = document.createElement('img')
+            this.element.src = 'img/mosca.png'
+            this.element.id = 'mosquito'
+            this.element.className = this.getClassMosquito() + ' ' + this.getLado()
+            this.element.style.left = this.posicaoX + 'px'
+            this.element.style.top = this.posicaoY + 'px'
+            this.element.style.position = 'absolute'
+            this.element.onclick = function(){
+                this.remove()
+            }
+            document.body.appendChild(this.element)
         }
-        document.body.appendChild(this.element)
+
+        this.createMosquito()
     }
+}
+
+function gameOver(){
+    document.getElementById('mosquito').remove()
+    window.location.href = 'fim_de_jogo.html'
 }
 

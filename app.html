@@ -15,11 +15,13 @@
                 <img id='v3' src='img/coracao_cheio.png'>
             </div>
             <div class='cronometro'>
-                Tempo restante: ?
+                Tempo restante: <span id="cronometro"> </span>
             </div>
         </div>
         <script id='criarMosquito'>
-            setInterval( function (){Mosquito()}, 1000)
+            let tempo = janela.tempoNivel()
+            setCronometro()
+            var criarMosquito = setInterval( function (){Mosquito()}, tempo)
             
         </script>
     </body>
